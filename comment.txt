@@ -1,0 +1,56 @@
+func init() {//original init () above main
+    ctx,cancel :=    
+  context.WithTimeout(context.Background(),10*time.Second)   
+    defer cancel()    
+    client,err :=     mongo.NewClient(options.Client().ApplyURI())    
+  if err!= nil {    
+    log.Fatal(err)    
+  }      
+  err = client.Connect(ctx)    
+    if err!= nil {     
+      log.Fatal(err)     
+    }     
+    defer client.Disconnect(ctx)    
+
+}
+os.Stdrr   
+//Auth : passport jwt strategy alternative  
+//What if its a valid hexadecimal mongo ID at the   first place itself ? an if() statement ?   
+// VALID BUG : primitive.ObjectIDFromHex(userID)   to convert userId into mongo valid Id ? Required ?  
+//Service files should be called with   client,dbName,collectionName etc ?   
+// nil == null ?? Diff   
+//Air should be installed ?    
+//CreateUser() should be implemented with go    routines 2    
+//CreateUsercontroller's return type should be   error or ctx.status 201 ?    
+// If database requests made by fiber backedn    application are as it as asyncrhonous in nature as
+handled by go lang    
+is there a point calling those service functions  from a controller file using go routines ?  
+//urlencoded feature of expressJS also bodyParser  not working !   
+//CreateUser shall have user related information   in the user obj paramter   
+this obj should be passed on to the InsertOne() ?? 
+//function having constructor behaviour should be
+a receiver function of the concerned struct ?   
+//PENDING  THEORY LEFT ABOVE     
+//service funcitons have access to mongoDB   collections which are expected to process their    operations in an asynchronus manner , so should I  
+call these functions from controller file using go routines ,  if not , then I should add a sleep function to simulate the time it takes ? since they were called using async-await inside an express application  
+// req-res parameters inside fiber ctx ? Does that mean fiber.App have em too ?
+//primitive.ObjectId or bson.ObjectId
+//_Id or Id itself ? MongoDB influence to them ?
+
+//time stamps implementation 
+//What is the purpose beind using async await in express applications performing CRUD operations on MongoDB? Do you think same purpose might come into picture in case of Fiber apps performing CRUD on mongoDB ?
+//how to achieve urlendcoded data in fiber as in Express was seen  
+//We need to parse the data before utilizing any service function bodyParser middleware should be present only at the main.go or also at the serviceFiles since JSON format is not comprabale to struct format 
+import (
+        "context"
+  "log"
+"github.com/YogeshDharya/fiberBackend/models"
+  "go.mongodb.org/mongo-driver/mongo/"
+  "go.mongodb.org/mongo-driver/mongo/options"
+)
+
+// servicesFolder so will contain bussiness logic service related operations & database interaction
+// this file will handle operations related to User model , such as CRUD operations
+userService.go
+
+services\ProductService.go

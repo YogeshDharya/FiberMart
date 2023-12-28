@@ -1,0 +1,3 @@
+[[tasks]]
+    script = "main.go"
+    args = ["run","main.go"]
