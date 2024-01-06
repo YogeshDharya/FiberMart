@@ -1,7 +1,6 @@
 package secrets 
 import( 
 "github.com/spf13/viper"
-"io"
 )
   type MongoDB struct {
   MongoDBURI string 
@@ -12,7 +11,7 @@ import(
 }  
 // type AppConfig struct{ What's the   purpose exactly  
 //   mongo   MongoDB   
-// }  
+// }  MonuDharya$1998
 var Config *MongoDB  
 func init(){  
   viper.SetConfigFile(".env")  
