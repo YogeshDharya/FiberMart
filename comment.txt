@@ -13,7 +13,10 @@ func init() {//original init () above main
     defer client.Disconnect(ctx)    
 
 }
-os.Stdrr   
+LEARNT - As of 2nd December 2024 12:25 am just switched to Comes the light < RealCode. Mamma on her way from Mundla since Prabhu Das mama had given his retirement party if m not wrong. Want to be done with my resume apart from getting my mongoDB cluster un n running for my FiberBackend project; haven't changed the name yet. Found below statements from .env file itself ! since I had learnt about .env files back then ! Which make a lot more sense to me now. Had learnt from an Award winning Short Film that - "LOG UNHI LOGON KI KADAR KURTE H JO UPNA BACKGROUND SWAYAM CHANGE KUR DETE KURMA KUR KUR K; VURNA ZINDA LAASH KI KOI KEEMAT NAHI YAHAAN.   
+os.Stdrr  n os.StdrrOut from Go Kon ? Anyways 
+o Still don't know how to add file extentions to gitignore 
+    but was told that .env should be kept in the gitignore 
 //Auth : passport jwt strategy alternative  
 //What if its a valid hexadecimal mongo ID at the   first place itself ? an if() statement ?   
 // VALID BUG : primitive.ObjectIDFromHex(userID)   to convert userId into mongo valid Id ? Required ?  
