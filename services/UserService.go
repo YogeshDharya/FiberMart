@@ -10,7 +10,11 @@ _  "time"
 //  "go.mongodb.org/mongo-driver/mongo/options"
 )   
 type User models.User
-func CreateUser(client *mongo.Client,dbName ,collectionName string,user *User,ansChan chan <- error)  {
+type  UserServiceI interface {
+    CreateUser(cli mongo.Client,dbName string,collectionName string,usr *models.User,chanValue chan<-error )
+}
+type UserService struct{}
+func (service UserService) CreateUser(client *mongo.Client,dbName ,collectionName string,user *User,ansChan chan <- error)  {
   go func(){
     contxt := context.Background()
     Collection := client.Database(dbName).Collection(collectionName)

@@ -3,6 +3,8 @@ package services
 import (
 	"context"
 	"github.com/YogeshDharya/fiberBackend/models"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/bson"
 )   
 var newProduct models.Product

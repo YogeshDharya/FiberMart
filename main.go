@@ -26,11 +26,11 @@ func main() {
 	if err:= godotenv.Load() ; err != nil {
 		panic(err)
 	}
-	port := os.Getenv("STORE_PORT")
+	port := os.Getenv("DB_PORT")// STORE_PORT -> DB_PORT 
 	fmt.Println("Port Before godotenv.Write()",port)
-	godotenv.Write(map[string][string]{"STORE_PORT":key , 3000})
-	newPort := os.Getenv("STORE_PORT");
-	fmt.Println("Port After writting into .env file",newPort)
+	godotenv.Write(map[string][string]{"DB_PORT":key , 3000})
+	newPort := os.Getenv("DB_PORT");
+	fmt.Println("Port After writing into .env file",newPort)
    app.Use(bodyparser.New()) //for the post request bodies parsing 
 	app.Use(compress.New())   //compresses response
   InitializeMongoDB()
