@@ -1,5 +1,5 @@
 package controllers 
 import "fmt"
-func main(){
-	fmt.Print("Hey  From AuthController !")
+func main(){ 
+	fmt.Print("Hey There Reached AuthController Successfully🎉 !")
 }

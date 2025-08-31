@@ -12,7 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
   "github.com/gofiber/fiber/v2/middleware/cors"
-  "github.com/gofiber/fiber/v2/middleware/bodyparser"
+//  "github.com/gofiber/fiber/v2/middleware/bodyparser"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -38,7 +38,7 @@ func main() {
   app.Use(cors.New())       //for cors   
 
   routes.V1Routes(app)
-  app.Use(func(ctx *fiber.Ctx) error {  
+  app.Use(func(ctx *fiber.Ctx) error {``  
       if ctx.Path()[:3] != "/v1" {//3's exclusive     
         return ctx.Status(fiber.StatusNotFound).SendString("NOT FOUND !") 
       }  
@@ -55,7 +55,7 @@ func InitializeMongoDB()  {
   userCollection := secrets.Config.UserCollection
   productCollection := secrets.Config.ProductCollection
  cartCollection := secrets.Config.CartCollection
-   models.InitializeCartModel(uri,defaultDb,cartCollection) 
+  models.InitializeCartModel(uri,defaultDb,cartCollection) 
   models.InitializeUserModel(uri,defaultDb,userCollection) 
-models.InitializeProductModel(uri,defaultDb,productCollection)
+  models.InitializeProductModel(uri,defaultDb,productCollection)
 }
