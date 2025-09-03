@@ -1,0 +1,13 @@
+.git
+.gitignore
+Dockerfile
+.dockerignore
+node_modules
+vendor
+*.log
+*.tmp
+*.db
+.env
+dist
+bin
+coverage

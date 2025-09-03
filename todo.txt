@@ -1,0 +1,148 @@
+! NodeJs old vanilla(may be) go had responseWriter and request pointers somewhere so what could be the reason for having fiber and not vanilla go lang for 
+request response 
+Should this project be built with my sql instead to have that comfort instead of ms sql server or mongodb 
+
+OLD Code as of 1st September 2025 
+DB_URI=mongodb+srv://Yogesh:ThisIsDante$1998@fibermartcluster.56ysf.mongodb.net/ 
+package main
+
+import (
+	//"context"
+	"fmt"
+	//"log"
+	_ "time"
+	"github.com/joho/godotenv"
+	"github.com/YogeshDharya/fiberBackend/models"
+	"github.com/YogeshDharya/fiberBackend/routes"
+	"github.com/YogeshDharya/fiberBackend/secrets"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
+  "github.com/gofiber/fiber/v2/middleware/cors"
+//  "github.com/gofiber/fiber/v2/middleware/bodyparser"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
+
+//mongodb+srv://yogeshdharya:Dante$1998@cluster0.izilr8v.mongodb.net/?retryWrites=true&w=majority
+var db *mongo.Database
+
+func main() {
+	fmt.Println("Fiber Mart Starting !")
+	app := fiber.New()
+	if err:= godotenv.Load() ; err != nil {
+		panic(err)
+	}
+	port := os.Getenv("DB_PORT")// STORE_PORT -> DB_PORT 
+	fmt.Println("Port Before godotenv.Write()",port)
+	godotenv.Write(map[string][string]{"DB_PORT":key , 3000})
+	newPort := os.Getenv("DB_PORT");
+	fmt.Println("Port After writing into .env file",newPort)
+  // app.Use(bodyparser.New()) seems it was replaced with requestId later on with this modue 
+  // github.com/gofiber/fiber/v2/middleware/requestid
+  // for the post request bodies parsing 
+	app.Use(compress.New())   //compresses response
+  InitializeMongoDB()
+
+  app.Use(cors.New())       //for cors   
+
+  routes.V1Routes(app)
+  app.Use(func(ctx *fiber.Ctx) error {``  
+      if ctx.Path()[:3] != "/v1" {//3's exclusive     
+        return ctx.Status(fiber.StatusNotFound).SendString("NOT FOUND !") 
+      }  
+     return ctx.Next()
+      })
+	errs := app.Listen(":",newPort)     //TODO 
+	if errs != nil {//log vs panic vs Errorf ?? PENDING      
+ 		fmt.Errorf("Error : %v", errs)     
+	}    
+}      
+func InitializeMongoDB()  {  
+  uri := secrets.Config.MongoDBURI
+  defaultDb := secrets.Config.DbName
+  userCollection := secrets.Config.UserCollection
+  productCollection := secrets.Config.ProductCollection
+ cartCollection := secrets.Config.CartCollection
+  models.InitializeCartModel(uri,defaultDb,cartCollection) 
+  models.InitializeUserModel(uri,defaultDb,userCollection) 
+  models.InitializeProductModel(uri,defaultDb,productCollection)
+}
+
+
+
+package services 
+import (     
+  "context"    
+_  "time"
+ _ "log" 
+  "github.com/YogeshDharya/fiberBackend/models"
+  "go.mongodb.org/mongo-driver/bson"
+  "go.mongodb.org/mongo-driver/bson/primitive"
+  "go.mongodb.org/mongo-driver/mongo"
+//  "go.mongodb.org/mongo-driver/mongo/options"
+)   
+type User models.User
+type  UserServiceI interface {
+    CreateUser(cli mongo.Client,dbName string,collectionName string,usr *models.User,chanValue chan<-error )
+}
+type UserService struct{
+  collection *mongo.Collection
+}
+func (service UserService) CreateUser(client *mongo.Client,dbName ,collectionName string,user *User,ansChan chan <- error)  {
+  go func(){
+    contxt := context.Background()
+    Collection := client.Database(dbName).Collection(collectionName)
+  _,err := Collection.InsertOne(contxt, User{})//models.User ? not user paramater above ?   
+  if err!= nil {  
+      ansChan <- err  
+  }  
+  }()
+  } 
+
+func GetUserById(client *mongo.Client,dbName,collectionName ,id string,ansChan chan<- *User) {
+  go func(){ 
+  contxt := context.Background()
+  ObjectId,erro := primitive.ObjectIDFromHex(id)
+  if erro != nil {
+    ansChan <- nil
+    return 
+    }
+      userCollection := client.Database(dbName).Collection(collectionName) 
+      var filter = bson.M{"_id":ObjectId};//DOUBT ??
+    var usr User
+      err := userCollection.FindOne(contxt,filter).Decode(&usr)
+      if err!= nil {
+        ansChan <- nil
+        return 
+      }
+  ansChan <- &usr
+  }()
+}       
+
+
+
+package services
+
+import (
+	"context"
+	"github.com/YogeshDharya/fiberBackend/models"
+	_ "go.mongodb.org/mongo-driver/mongo"
+	_ "go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/bson"
+)   
+var newProduct models.Product
+func GetAllProducts() ([]models.Product,error){
+  ctx := context.Background() 
+  iterator,err := models.ProductCollection.Find(ctx,bson.M{})
+  if err != nil {
+    return nil,err
+  }
+  var products []models.Product 
+  if err:= iterator.All(ctx,&products); err != nil {
+    return nil,err
+  }
+  return products ,nil
+}
+func GeProductById(id string){
+  
+  }

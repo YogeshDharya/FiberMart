@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 	"os"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 type Cart struct {
   Id primitive.ObjectID `bson:"_id,omitempty"`
-  Email string
-  paymentOptions string
-  CartItems   []Product
+  Email string            `bson:"email"`
+  PaymentOptions string `bson:"payment_options"`
+  CartItems   []Product 
 }
 var CartCollection *mongo.Collection
 func InitializeCartModel(uri,dbName,collectionName string){

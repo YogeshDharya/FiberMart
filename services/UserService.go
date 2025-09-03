@@ -9,34 +9,41 @@ _  "time"
   "go.mongodb.org/mongo-driver/mongo"
 //  "go.mongodb.org/mongo-driver/mongo/options"
 )   
-type User models.User
 type  UserServiceI interface {
-    CreateUser(cli mongo.Client,dbName string,collectionName string,usr *models.User,chanValue chan<-error )
+    CreateUwser(cli mongo.Client,dbName string,collectionName string,usr *models.User,chanValue chan<-error )
+    GetUserById(client *mongo.Client,dbName,collectionName ,id string,ansChan chan<- *models.User)
 }
-type UserService struct{}
-func (service UserService) CreateUser(client *mongo.Client,dbName ,collectionName string,user *User,ansChan chan <- error)  {
+type UserService struct{
+  collection *mongo.Collection
+}
+func NewUserService(db *mongo.Database, collection string) *UserService{
+  return &UserService{
+    collection: db.Collection(collection),
+  }
+}
+func (service *UserService) CreateUser(user *models.User,ansChan chan <- error)  {
   go func(){
     contxt := context.Background()
-    Collection := client.Database(dbName).Collection(collectionName)
-  _,err := Collection.InsertOne(contxt, User{})//models.User ? not user paramater above ?   
+    collection := service.collection
+  _,err := collection.InsertOne(contxt, models.User{})//models.User ? not user paramater above ?   
   if err!= nil {  
       ansChan <- err  
   }  
   }()
   } 
 
-func GetUserById(client *mongo.Client,dbName,collectionName ,id string,ansChan chan<- *User) {
+func (service *UserService) GetUserById( id string,ansChan chan<- *models.User) {
   go func(){ 
-  contxt := context.Background()
-  ObjectId,erro := primitive.ObjectIDFromHex(id)
-  if erro != nil {
+  ctx := context.Background()
+  ObjectId,error := primitive.ObjectIDFromHex(id)
+  if error != nil {
     ansChan <- nil
     return 
     }
-      userCollection := client.Database(dbName).Collection(collectionName) 
+      userCollection := service.collection
       var filter = bson.M{"_id":ObjectId};//DOUBT ??
-    var usr User
-      err := userCollection.FindOne(contxt,filter).Decode(&usr)
+    var usr models.User
+      err := userCollection.FindOne(ctx,filter).Decode(&usr)
       if err!= nil {
         ansChan <- nil
         return 
