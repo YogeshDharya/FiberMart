@@ -7,8 +7,7 @@ type Audit struct{
     IP       string    `json:"ip"`
     Message  string    `json:"message"`
     TraceID  string    `json:"traceId"`
-    Role     string    `json:"role"`
+//    Role     string    `json:"role"`
     Action   string    `json:"action"`
-    Material string    `json:"material"`
     Type     string    `json:"type"`
 }
