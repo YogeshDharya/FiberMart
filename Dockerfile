@@ -3,36 +3,39 @@ FROM golang:1.21-alpine AS builder
 
 WORKDIR /app
 
+# Install git for ldflags versioning
+RUN apk add --no-cache git
+
 COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy source code
 COPY . .
 
-# Build with optimizations
+# Build static binary
 RUN CGO_ENABLED=0 GOOS=linux go build \
-    -ldflags="-w -s -X main.version=$(git describe --tags --always)" \
+    -ldflags="-w -s -X main.version=$(git describe --tags --always || echo dev)" \
     -o fiber-mart .
 
-# Final stage - ultra minimal
-FROM scratch
+# Install git + tzdata for timezone info
+RUN apk add --no-cache git tzdata
 
-# Copy certificates for HTTPS
+# Final stage
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+# Copy required files
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
-# Copy timezone data
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-
-# Copy binary
 COPY --from=builder /app/fiber-mart /app/fiber-mart
-COPY --from=builder /app/.env /app/.env
 
 # Expose port
 EXPOSE 8080
 
-# Health check
+# Healthcheck via HTTP endpoint (if you add /healthz route in Fiber)
 HEALTHCHECK --interval=30s --timeout=3s \
-    CMD ["/app/fiber-mart", "health"] || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1
 
-# Run the application
+# Run app
 CMD ["/app/fiber-mart"]
